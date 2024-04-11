@@ -5,12 +5,18 @@ using PoznamkyAsp.Models;
 
 namespace PoznamkyAsp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<Uzivatel>
+    public class ArchivPoznamekData : DbContext 
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-
-        }
+        public DbSet<Uzivatel> Uzivatele { get; set; }
         public DbSet<Poznamka> Poznamky { get; set; }
+
+        public ArchivPoznamekData(DbContextOptions<ArchivPoznamekData> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Poznamka>()
+                .HasOne(u => u.Autor)
+                .WithMany(a => a.Poznamky);
+        }
     }
 }
